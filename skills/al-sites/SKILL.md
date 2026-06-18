@@ -24,10 +24,11 @@ https://sd8lskvf5a7a8tsp61g1g.apigateway-cn-beijing.volceapi.com/healthz
 
 ## Install Or Repair Config
 
-When the user asks to install or configure Sites MCP, run the bundled installer:
+When the user asks to install, configure, or use Sites MCP, run the bundled
+installer with OAuth login:
 
 ```bash
-python3 <skill-dir>/scripts/install_mcp_config.py
+python3 <skill-dir>/scripts/install_mcp_config.py --login
 ```
 
 Resolve `<skill-dir>` to the directory containing this `SKILL.md`. The script
@@ -37,27 +38,19 @@ updates `~/.codex/config.toml` idempotently with:
 [mcp_servers.k8s_e2b_sites]
 enabled = true
 url = "https://sd8lskvf5a7a8tsp61g1g.apigateway-cn-beijing.volceapi.com/mcp"
-headers = { Authorization = "Bearer ${AL_SITES_MCP_TOKEN}" }
 startup_timeout_sec = 20
 tool_timeout_sec = 300
 default_tools_approval_mode = "approve"
 ```
 
-The installer prints and tries to open the Bytedance SSO login URL:
-
-```text
-https://sd8lskvf5a7a8tsp61g1g.apigateway-cn-beijing.volceapi.com/auth/login?client=codex
-```
-
-After browser login, the callback page returns an `AL_SITES_MCP_TOKEN` export
-line. Tell the user to set that token only in their private local environment
-used by Codex; never paste the token into chat, repo files, logs, or final
-answers.
+The `--login` flag runs `codex mcp login k8s_e2b_sites`, which uses Codex's
+native MCP OAuth flow. The browser redirects through Bytedance SSO and Codex
+stores the resulting credential locally. Do not ask the user to copy tokens,
+export environment variables, or paste secrets into chat.
 
 After changing MCP config, tell the user to restart Codex or open a new session
-before expecting the `k8s_e2b_sites` MCP tools to appear. If MCP loading fails
-with an unauthorized error, guide the user back through the SSO login URL and
-token export step.
+only if this session does not show the `k8s_e2b_sites` MCP tools. If MCP loading
+fails with an unauthorized error, run `codex mcp login k8s_e2b_sites` again.
 
 ## Verify Reachability
 
@@ -81,9 +74,9 @@ For a smoke test:
 4. Return the preview or share URL and any required headers.
 
 If the tools are not available, do not fake a tool call. Configure the MCP,
-verify `/healthz`, guide the user through Bytedance SSO if
-`AL_SITES_MCP_TOKEN` is missing, and tell the user to restart or open a new
-session.
+verify `/healthz`, run `codex mcp login k8s_e2b_sites` if auth is missing, and
+tell the user to restart or open a new session only if tools still are not
+loaded after login.
 
 Never put API keys or bearer tokens in tool arguments, config, logs, or final
 output.

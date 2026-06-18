@@ -1,7 +1,7 @@
 interface:
   display_name: "AL Sites"
   short_description: "Install and use AL Sites MCP"
-  default_prompt: "Use $al-sites to install and verify the AL Sites MCP, then create a smoke-test site."
+  default_prompt: "Use $al-sites to install AL Sites MCP, complete Codex MCP OAuth login, then create a smoke-test site."
 dependencies:
   tools:
     - type: "mcp"
