@@ -7,7 +7,7 @@ Public Codex skills for AL sandbox workflows.
 Install the AL Sites skill from `skills/al-sites`.
 
 ```text
-从 git@github.com:ShanyouYu-Sean/sandbox-skills.git 的 skills/al-sites 安装 al-sites skill
+从 git@github.com:ShanyouYu-Sean/sandbox-skills.git 安装 al-sites，并完成 MCP 配置和 SSO 授权
 ```
 
-The skill configures the remote AL Sites MCP endpoint and uses Codex's native MCP OAuth flow. Run `codex mcp login k8s_e2b_sites` when prompted; Codex opens Bytedance SSO and stores the MCP credential locally. No token copy/export step is required.
+The install prompt should install `skills/al-sites`, then immediately run the installed `scripts/install_mcp_config.py` in the same session. The script configures the remote AL Sites MCP endpoint and starts Codex's native MCP OAuth flow with Bytedance SSO. No token copy/export step is required. After login, open one new Codex session to use the `k8s_e2b_sites` MCP tools.

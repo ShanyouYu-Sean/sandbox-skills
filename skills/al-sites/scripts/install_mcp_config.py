@@ -49,7 +49,19 @@ def install_config(path: Path) -> bool:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, default=default_config_path())
-    parser.add_argument("--login", action="store_true", help="run `codex mcp login k8s_e2b_sites` after writing config")
+    parser.add_argument(
+        "--login",
+        dest="login",
+        action="store_true",
+        default=True,
+        help="run `codex mcp login k8s_e2b_sites` after writing config (default)",
+    )
+    parser.add_argument(
+        "--no-login",
+        dest="login",
+        action="store_false",
+        help="only write config; do not start the Codex MCP OAuth login flow",
+    )
     args = parser.parse_args()
 
     changed = install_config(args.config)
@@ -63,8 +75,8 @@ def main() -> int:
         subprocess.run([codex, "mcp", "login", SERVER_NAME], check=True)
         print(f"OAuth login completed for MCP server `{SERVER_NAME}`.")
     else:
-        print(f"To login now, run: codex mcp login {SERVER_NAME}")
-    print("Restart Codex or open a new session if this session does not show the MCP tools.")
+        print(f"Skipped OAuth login. To login later, run: codex mcp login {SERVER_NAME}")
+    print("Open one new Codex session after login so the MCP tools are discovered.")
     return 0
 
 
