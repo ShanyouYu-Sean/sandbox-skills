@@ -5,23 +5,19 @@ Use this prompt with Codex or another local-shell agent that can install a skill
 Short version:
 
 ```text
-从 git@github.com:ShanyouYu-Sean/sandbox-skills.git 安装 al-sites，并完成 MCP 配置和 SSO 授权
+帮我安装这个 skills https://github.com/ShanyouYu-Sean/sandbox-skills
 ```
 
 Full version:
 
 ```text
-Install the AL Sites skill from this GitHub repository and finish bootstrap in this same session:
+Install the skills from this GitHub repository and finish AL Sites bootstrap in this same session:
 
-git@github.com:ShanyouYu-Sean/sandbox-skills.git
+https://github.com/ShanyouYu-Sean/sandbox-skills
 
-Use the skill in `skills/al-sites`. After installing it into my local Codex skill directory, do not wait for a new session to activate the skill. Directly run the installed script:
+Do not ask me which skill path to use. This repository's default skill is `skills/al-sites`.
 
-python3 "${CODEX_HOME:-$HOME/.codex}/skills/al-sites/scripts/install_mcp_config.py"
+Clone or download the repository, then run `./install.sh` from the repository root. The script installs `skills/al-sites` into my local Codex skill directory, writes the `k8s_e2b_sites` MCP config, runs `codex mcp login k8s_e2b_sites` for Bytedance SSO, verifies the health endpoint, and opens a new Codex session so MCP tools can be discovered.
 
-That script must configure the remote AL Sites MCP and run `codex mcp login k8s_e2b_sites` for Bytedance SSO. Then verify:
-
-curl -sS https://sd8lskvf5a7a8tsp61g1g.apigateway-cn-beijing.volceapi.com/healthz
-
-Do not write or print API keys or bearer tokens. After successful login and health check, tell me to open one new Codex session to use `k8s_e2b_sites` MCP tools; do not ask me to run another manual login command.
+Do not write or print API keys, bearer tokens, OAuth codes, or cookies. Do not ask me to run another manual login command. If opening the new Codex session fails, tell me to open one new Codex session manually.
 ```

@@ -24,8 +24,9 @@ https://sd8lskvf5a7a8tsp61g1g.apigateway-cn-beijing.volceapi.com/healthz
 
 ## Install Or Repair Config
 
-When the user asks to install, configure, or use Sites MCP, run the bundled
-installer. It performs OAuth login by default:
+When the user asks to install, configure, repair, or use Sites MCP and the MCP
+tools are not already available, run the bundled installer. It performs OAuth
+login, health verification, and new-session handoff by default:
 
 ```bash
 python3 <skill-dir>/scripts/install_mcp_config.py
@@ -45,14 +46,16 @@ default_tools_approval_mode = "approve"
 
 The installer runs `codex mcp login k8s_e2b_sites`, which uses Codex's native
 MCP OAuth flow. The browser redirects through Bytedance SSO and Codex stores
-the resulting credential locally. Do not ask the user to copy tokens, export
-environment variables, or paste secrets into chat.
+the resulting credential locally. It also verifies `/healthz` and tries to open
+a new Codex session so MCP tools can be discovered. Do not ask the user to copy
+tokens, export environment variables, or paste secrets into chat.
 
 After installing or changing MCP config, tell the user to open one new Codex
-session before expecting the `k8s_e2b_sites` MCP tools. The install session can
-write config and finish SSO, but current sessions usually cannot discover newly
-configured MCP tools. If MCP loading fails with an unauthorized error in the new
-session, run `codex mcp login k8s_e2b_sites` again.
+session manually only if the installer could not open it automatically. The
+install session can write config and finish SSO, but current sessions usually
+cannot discover newly configured MCP tools. If MCP loading fails with an
+unauthorized error in the new session, run `codex mcp login k8s_e2b_sites`
+again.
 
 ## Verify Reachability
 
