@@ -6,15 +6,18 @@ from __future__ import annotations
 import argparse
 import os
 import re
+import webbrowser
 from pathlib import Path
 
 
 SERVER_NAME = "k8s_e2b_sites"
 MCP_URL = "https://sd8lskvf5a7a8tsp61g1g.apigateway-cn-beijing.volceapi.com/mcp"
+LOGIN_URL = "https://sd8lskvf5a7a8tsp61g1g.apigateway-cn-beijing.volceapi.com/auth/login?client=codex"
 
 BLOCK = f"""[mcp_servers.{SERVER_NAME}]
 enabled = true
 url = "{MCP_URL}"
+headers = {{ Authorization = "Bearer ${{AL_SITES_MCP_TOKEN}}" }}
 startup_timeout_sec = 20
 tool_timeout_sec = 300
 default_tools_approval_mode = "approve"
@@ -47,12 +50,21 @@ def install_config(path: Path) -> bool:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, default=default_config_path())
+    parser.add_argument("--no-open-login", action="store_true", help="print the Bytedance SSO login URL without opening it")
     args = parser.parse_args()
 
     changed = install_config(args.config)
     status = "updated" if changed else "already configured"
     print(f"{args.config}: {status}")
-    print("Restart Codex or open a new session so the MCP server is loaded.")
+    print("Bytedance SSO login URL:")
+    print(LOGIN_URL)
+    if not args.no_open_login:
+        if webbrowser.open(LOGIN_URL):
+            print("Opened the Bytedance SSO login URL in your browser.")
+        else:
+            print("Could not open a browser automatically; open the URL above manually.")
+    print("After login, export AL_SITES_MCP_TOKEN in the environment used by Codex.")
+    print("Restart Codex or open a new session so the MCP server is loaded with the token.")
     return 0
 
 
