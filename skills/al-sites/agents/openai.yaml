@@ -1,0 +1,11 @@
+interface:
+  display_name: "AL Sites"
+  short_description: "Install and use AL Sites MCP"
+  default_prompt: "Use $al-sites to install and verify the AL Sites MCP, then create a smoke-test site."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "k8s_e2b_sites"
+      description: "AL Sites MCP server"
+      transport: "streamable_http"
+      url: "https://sd8lskvf5a7a8tsp61g1g.apigateway-cn-beijing.volceapi.com/mcp"
